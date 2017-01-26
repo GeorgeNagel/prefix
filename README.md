@@ -16,6 +16,7 @@ func main() {
   // stringsToCheck := stuff()
   stringsMachingPrefix := prefix.Match(prefixes, stringsToCheck)
 }
+```
 
 ## Tests
 
