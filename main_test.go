@@ -10,7 +10,7 @@ func TestStringIsPrefixOfItself(t *testing.T) {
 	toCheck := []string{"abba"}
 	result := Match(prefixes, toCheck)
 	if !stringSliceEq(result, toCheck) {
-		t.Fail()
+		t.Fatalf("%s not in %s", toCheck, result)
 	}
 }
 
@@ -25,10 +25,28 @@ func TestStringIsPrefixOfLargerString(t *testing.T) {
 
 func TestStringIsNotPrefix(t *testing.T) {
 	prefixes := []string{"ab"}
-	toCheck := []string{"abba"}
+	toCheck := []string{"academia"}
 	result := Match(prefixes, toCheck)
 	if !stringSliceEq(result, []string{}) {
-		t.Fail()
+		t.Fatalf("Found invalid matches: %s", result)
+	}
+}
+
+func TestEmptyStringIsPrefixOfEverything(t *testing.T) {
+	prefixes := []string{""}
+	toCheck := []string{"academia", "sandstorm"}
+	result := Match(prefixes, toCheck)
+	if !stringSliceEq(result, toCheck) {
+		t.Fatalf("%s not in %s", toCheck, result)
+	}
+}
+
+func TestEmptyStringDoesntMatchPrefixes(t *testing.T) {
+	prefixes := []string{"foot", "bart"}
+	toCheck := []string{""}
+	result := Match(prefixes, toCheck)
+	if !stringSliceEq(result, []string{}) {
+		t.Fatalf("Found invalid matches: %s", result)
 	}
 }
 

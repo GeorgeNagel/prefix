@@ -1,8 +1,15 @@
 package prefix
 
 func Match(prefixes []string, toCheck []string) []string {
-	// prefixTree := make(map[byte]byte)
-	return nil
+	prefixTree := buildPrefixTree(prefixes)
+	matchingStrings := []string{}
+	for _, str := range toCheck {
+		hasPrefixMatch := stringHasPrefixMatch(prefixTree, str)
+		if hasPrefixMatch {
+			matchingStrings = append(matchingStrings, str)
+		}
+	}
+	return matchingStrings
 }
 
 func buildPrefixTree(prefixes []string) map[interface{}]interface{} {
@@ -21,5 +28,26 @@ func buildPrefixTree(prefixes []string) map[interface{}]interface{} {
 }
 
 func stringHasPrefixMatch(prefixTree map[interface{}]interface{}, stringToCheck string) bool {
-	return false
+	currentNode := prefixTree
+	for i := 0; i < len(stringToCheck); i++ {
+		b := stringToCheck[i]
+		_, nilAtThisLevel := currentNode[nil]
+		if nilAtThisLevel {
+			return true
+		}
+
+		_, byteAtThisLevel := currentNode[b]
+		if !byteAtThisLevel {
+			return false
+		} else {
+			currentNode = currentNode[b].(map[interface{}]interface{})
+		}
+	}
+
+	_, nilAtThisLevel := currentNode[nil]
+	if nilAtThisLevel {
+		return true
+	} else {
+		return false
+	}
 }
