@@ -8,7 +8,8 @@ import (
 func TestStringIsPrefixOfItself(t *testing.T) {
 	prefixes := []string{"abba"}
 	toCheck := []string{"abba"}
-	result := Match(prefixes, toCheck)
+	prefixTree := BuildPrefixTree(prefixes)
+	result := Match(prefixTree, toCheck)
 	if !stringSliceEq(result, toCheck) {
 		t.Fatalf("%s not in %s", toCheck, result)
 	}
@@ -17,7 +18,8 @@ func TestStringIsPrefixOfItself(t *testing.T) {
 func TestStringIsPrefixOfLargerString(t *testing.T) {
 	prefixes := []string{"ab"}
 	toCheck := []string{"abba"}
-	result := Match(prefixes, toCheck)
+	prefixTree := BuildPrefixTree(prefixes)
+	result := Match(prefixTree, toCheck)
 	if !stringSliceEq(result, toCheck) {
 		t.Fail()
 	}
@@ -26,7 +28,8 @@ func TestStringIsPrefixOfLargerString(t *testing.T) {
 func TestStringIsNotPrefix(t *testing.T) {
 	prefixes := []string{"ab"}
 	toCheck := []string{"academia"}
-	result := Match(prefixes, toCheck)
+	prefixTree := BuildPrefixTree(prefixes)
+	result := Match(prefixTree, toCheck)
 	if !stringSliceEq(result, []string{}) {
 		t.Fatalf("Found invalid matches: %s", result)
 	}
@@ -35,7 +38,8 @@ func TestStringIsNotPrefix(t *testing.T) {
 func TestEmptyStringIsPrefixOfEverything(t *testing.T) {
 	prefixes := []string{""}
 	toCheck := []string{"academia", "sandstorm"}
-	result := Match(prefixes, toCheck)
+	prefixTree := BuildPrefixTree(prefixes)
+	result := Match(prefixTree, toCheck)
 	if !stringSliceEq(result, toCheck) {
 		t.Fatalf("%s not in %s", toCheck, result)
 	}
@@ -44,7 +48,8 @@ func TestEmptyStringIsPrefixOfEverything(t *testing.T) {
 func TestEmptyStringDoesntMatchPrefixes(t *testing.T) {
 	prefixes := []string{"foot", "bart"}
 	toCheck := []string{""}
-	result := Match(prefixes, toCheck)
+	prefixTree := BuildPrefixTree(prefixes)
+	result := Match(prefixTree, toCheck)
 	if !stringSliceEq(result, []string{}) {
 		t.Fatalf("Found invalid matches: %s", result)
 	}
@@ -52,7 +57,7 @@ func TestEmptyStringDoesntMatchPrefixes(t *testing.T) {
 
 func TestBuildPrefixTreeSimpleStrings(t *testing.T) {
 	prefixes := []string{"ab", "po"}
-	actualPrefixTree := buildPrefixTree(prefixes)
+	actualPrefixTree := BuildPrefixTree(prefixes)
 	expectedPrefixTree := map[interface{}]interface{}{
 		byte('a'): map[interface{}]interface{}{
 			byte('b'): map[interface{}]interface{}{
@@ -73,7 +78,7 @@ func TestBuildPrefixTreeSimpleStrings(t *testing.T) {
 
 func TestBuildPrefixTreeSameStart(t *testing.T) {
 	prefixes := []string{"ab", "ac"}
-	actualPrefixTree := buildPrefixTree(prefixes)
+	actualPrefixTree := BuildPrefixTree(prefixes)
 	expectedPrefixTree := map[interface{}]interface{}{
 		byte('a'): map[interface{}]interface{}{
 			byte('b'): map[interface{}]interface{}{
@@ -99,7 +104,7 @@ func TestStringHasPrefixMatch(t *testing.T) {
 		},
 	}
 	stringToCheck := "abc"
-	hasMatch := stringHasPrefixMatch(prefixTree, stringToCheck)
+	hasMatch := StringHasPrefixMatch(prefixTree, stringToCheck)
 	if !hasMatch {
 		t.Fail()
 	}
@@ -114,7 +119,7 @@ func TestStringDoesNotHavePrefixMatch(t *testing.T) {
 		},
 	}
 	stringToCheck := "ac"
-	hasMatch := stringHasPrefixMatch(prefixTree, stringToCheck)
+	hasMatch := StringHasPrefixMatch(prefixTree, stringToCheck)
 	if hasMatch {
 		t.Fail()
 	}
@@ -129,7 +134,7 @@ func TestStringDoesNotHavePrefixMatchTooShort(t *testing.T) {
 		},
 	}
 	stringToCheck := "a"
-	hasMatch := stringHasPrefixMatch(prefixTree, stringToCheck)
+	hasMatch := StringHasPrefixMatch(prefixTree, stringToCheck)
 	if hasMatch {
 		t.Fail()
 	}

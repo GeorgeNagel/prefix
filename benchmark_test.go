@@ -6,41 +6,37 @@ import (
 	"testing"
 )
 
-func BenchmarkTwoLoopsPrefixMatch(b *testing.B) {
-	prefixesArray := generateRandomStrings(80000, 3)
-	toCheckArray := generateRandomStrings(7000, 10)
-
+func BenchmarkLoopPrefixMatch(b *testing.B) {
+	prefixesArray := generateRandomStrings(80000, 30)
 	prefixesSlice := prefixesArray[:]
-	toCheckSlice := toCheckArray[:]
+
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		matchByTwoLoops(prefixesSlice, toCheckSlice)
+		toCheckString := generateRandomString(30)
+		matchByLoop(prefixesSlice, toCheckString)
 	}
 }
 
 func BenchmarkPrefixTreeMatch(b *testing.B) {
-	prefixesArray := generateRandomStrings(80000, 3)
-	toCheckArray := generateRandomStrings(7000, 10)
-
+	prefixesArray := generateRandomStrings(80000, 30)
 	prefixesSlice := prefixesArray[:]
-	toCheckSlice := toCheckArray[:]
+
+	prefixTree := BuildPrefixTree(prefixesSlice)
+	b.ResetTimer()
 	for i := 0; i < b.N; i++ {
-		Match(prefixesSlice, toCheckSlice)
+		toCheckString := generateRandomString(30)
+		StringHasPrefixMatch(prefixTree, toCheckString)
 	}
 }
 
-func matchByTwoLoops(prefixes []string, stringsToCheck []string) []string {
-	matchingStrings := []string{}
-	for i := 0; i < len(stringsToCheck); i++ {
-		for j := 0; j < len(prefixes); j++ {
-			stringToCheck := stringsToCheck[i]
-			prefix := prefixes[j]
-			if strings.HasPrefix(stringToCheck, prefix) {
-				matchingStrings = append(matchingStrings, stringToCheck)
-				break
-			}
+func matchByLoop(prefixes []string, stringToCheck string) bool {
+	for i := 0; i < len(prefixes); i++ {
+		prefix := prefixes[i]
+		if strings.HasPrefix(stringToCheck, prefix) {
+			return true
 		}
 	}
-	return matchingStrings
+	return false
 }
 
 func generateRandomStrings(numStrings int, maxLength int) []string {
