@@ -71,6 +71,25 @@ func TestBuildPrefixTreeSimpleStrings(t *testing.T) {
 	}
 }
 
+func TestBuildPrefixTreeSameStart(t *testing.T) {
+	prefixes := []string{"ab", "ac"}
+	actualPrefixTree := buildPrefixTree(prefixes)
+	expectedPrefixTree := map[interface{}]interface{}{
+		byte('a'): map[interface{}]interface{}{
+			byte('b'): map[interface{}]interface{}{
+				nil: nil,
+			},
+			byte('c'): map[interface{}]interface{}{
+				nil: nil,
+			},
+		},
+	}
+	eq := reflect.DeepEqual(actualPrefixTree, expectedPrefixTree)
+	if !eq {
+		t.Fatalf("%s != %s", actualPrefixTree, expectedPrefixTree)
+	}
+}
+
 func TestStringHasPrefixMatch(t *testing.T) {
 	prefixTree := map[interface{}]interface{}{
 		byte('a'): map[interface{}]interface{}{

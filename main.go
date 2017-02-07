@@ -18,8 +18,14 @@ func buildPrefixTree(prefixes []string) map[interface{}]interface{} {
 		currentNode := tree
 		for i := 0; i < len(str); i++ {
 			b := str[i]
-			currentNode[b] = make(map[interface{}]interface{})
-			nextNode := currentNode[b].(map[interface{}]interface{})
+
+			childMap, childMapExists := currentNode[b]
+			if !childMapExists {
+				childMap = make(map[interface{}]interface{})
+				currentNode[b] = childMap
+			}
+			nextNode := childMap.(map[interface{}]interface{})
+
 			currentNode = nextNode
 		}
 		currentNode[nil] = nil

@@ -36,6 +36,7 @@ func matchByTwoLoops(prefixes []string, stringsToCheck []string) []string {
 			prefix := prefixes[j]
 			if strings.HasPrefix(stringToCheck, prefix) {
 				matchingStrings = append(matchingStrings, stringToCheck)
+				break
 			}
 		}
 	}
